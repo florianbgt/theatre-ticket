@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  api:
+    restart: always
+    build:
+      context: api
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./api:/code
+    ports:
+      - "8000:8000"
