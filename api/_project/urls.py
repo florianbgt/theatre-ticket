@@ -15,13 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-
+from tickets.views import SeatList, SeatDetail, AssignSeats
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('token/', TokenObtainPairView.as_view()),
-    path('token/refresh/', TokenRefreshView.as_view()),
+    path('seats/', SeatList.as_view()),
+    path('seats/<int:pk>/', SeatDetail.as_view()),
+    path('seats/assign/', AssignSeats.as_view()),
 ]
