@@ -7,45 +7,50 @@ def main(groups):
     seats.update(user = None)   # remove all users from their seats
     layout = []
     for section in sections:
-        #Get all seats in the section and order by row and number
+        #Get all seats in the section
         seat_section = seats.filter(section=section)
         section_ordered = []
         for rank in ranks:
+            # Get all seat of the specific rank in the section and sort them
             seat_rank = seat_section.filter(rank=rank).order_by('row', 'number')
-            print(seat_rank)
+            # If no seat with rank, append empty list and exit loop
+            if len(seat_rank) == 0:
+                section_ordered.append([])
+                continue
             rank_ordered = []
             row_ordered = []
-            print('fail here')
+            # Assign row element to the row number of the first member of the list
             row_number = seat_rank.first().row
+            order = 1
             while len(seat_rank) > 0:
                 if row_number == seat_rank.first().row:
                     row_ordered.append(seat_rank.first())
                     seat_rank = seat_rank.exclude(pk=seat_rank.first().pk)
                 else:
-                    rank_ordered.append(row_ordered)
+                    rank_ordered.extend(row_ordered[::order])
+                    order *= -1
                     row_ordered = []
                     row_number = seat_rank.first().row
-            rank_ordered.append(row_ordered)
+            rank_ordered.extend(row_ordered[::order])
             section_ordered.append(rank_ordered)
         layout.append(section_ordered)
-    print(layout)
-        
-        # row = []
-        # row_number = seat_section.first().row
-        # # Iterate over seat_section to map it by row
-        # while len(seat_section) > 0:
-        #     if row_number == seat_section.first().row:
-        #         row.append(seat_section.first())
-        #         seat_section = seat_section.exclude(pk=seat_section.first().pk)
-        #     else:
-        #         seat_section_mapped.append(row)
-        #         row = []
-        #         row_number = seat_section.first().row
-        # seat_section_mapped.append(row)
-        # layout.append(seat_section_mapped)
-    print(layout)
-    for group in groups:
-        print(group)
+        i = 0
+        for j in range(len(groups)):
+            current_rank = max([section[i] for section in layout], key=len)
+            if current_rank == 0:
+                i += 1
+                current_rank = max([section[i] for section in layout], key=len)
+            current_section = [section for section in layout if section[i] == current_rank]
+            for _ in range(groups[j]):
+                current_rank[0].user == j+1
+                current_rank.pop(0)
+            
+
+    # i = 0
+    # for group in groups:
+    #     for _ in range(group):
+    #         section = max([len(section[i]) for section in layout])
+    #         print(section)
 
 
 
@@ -63,4 +68,4 @@ def main(groups):
     #     del seats[-1][:row_number]
     #     order *= -1
     # del seats[-1]
-    return []
+    return 'All groups have been successfully placed'

@@ -26,7 +26,7 @@ class Seat(models.Model):
     section = models.ForeignKey(Section, on_delete=models.SET_NULL, null=True, default=None)
     row = models.PositiveIntegerField()
     rank = models.ForeignKey(Rank, on_delete=models.SET_NULL, null=True, default=None)
-    user = models.PositiveIntegerField(unique=True, null=True, default=None)
+    user = models.PositiveIntegerField(null=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
