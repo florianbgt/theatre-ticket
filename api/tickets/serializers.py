@@ -18,7 +18,7 @@ class RankSerializer(serializers.ModelSerializer):
 class SeatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seat
-        fields='__all__'
+        fields=('number', 'row', 'user', 'section', 'rank', 'is_aisle', 'is_balcony')
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
