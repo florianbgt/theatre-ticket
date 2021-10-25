@@ -31,3 +31,9 @@ class AssignSeatsSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return validated_data
+
+class GetSeatsSerializer(serializers.Serializer):
+    group = serializers.IntegerField()
+
+    def create(self, validated_data):
+        return validated_data

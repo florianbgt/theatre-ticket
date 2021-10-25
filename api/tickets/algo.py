@@ -1,11 +1,14 @@
 from .models import Section, Rank, Seat
 
 def main(groups):
+    # Querries from db
     sections = Section.objects.all()
     ranks = Rank.objects.all()
     seats = Seat.objects.all()
-    seats.update(user = None)   # remove all users from their seats
+    # Remove all users from their seats
+    seats.update(user = None)
     layout = []
+    # Iterate over each section
     for section in sections:
         #Get all seats in the section
         seat_section = seats.filter(section=section)
@@ -19,13 +22,16 @@ def main(groups):
                 continue
             rank_ordered = []
             row_ordered = []
-            # Assign row element to the row number of the first member of the list
             row_number = seat_rank.first().row
+            # Order 1 == best rank
             order = 1
+            # loop until no seat in seat_rank
             while len(seat_rank) > 0:
+                # if row # == first item row #, append to list and remove seat
                 if row_number == seat_rank.first().row:
                     row_ordered.append(seat_rank.first())
                     seat_rank = seat_rank.exclude(pk=seat_rank.first().pk)
+                # else, end of the row, append the row_ordered to the rank ordered and reverse 1/2 time
                 else:
                     rank_ordered.extend(row_ordered[::order])
                     order *= -1
@@ -34,38 +40,27 @@ def main(groups):
             rank_ordered.extend(row_ordered[::order])
             section_ordered.append(rank_ordered)
         layout.append(section_ordered)
-        i = 0
-        for j in range(len(groups)):
-            current_rank = max([section[i] for section in layout], key=len)
-            if current_rank == 0:
-                i += 1
-                current_rank = max([section[i] for section in layout], key=len)
-            current_section = [section for section in layout if section[i] == current_rank]
-            for _ in range(groups[j]):
-                current_rank[0].user == j+1
-                current_rank.pop(0)
-            
-
-    # i = 0
-    # for group in groups:
-    #     for _ in range(group):
-    #         section = max([len(section[i]) for section in layout])
-    #         print(section)
-
-
-
-    # row_number = 5
-    # row_length = 5
-    # seats = [None for _ in range(row_number * row_length)]
-    # i = 0
-    # for j in range(len(groups)):
-    #     seats[i:i + groups[j]] = [(j + 1) for _ in range(groups[j])]
-    #     i += groups[j]
-    # seats = [seats]
-    # order = 1
-    # for i in range(row_number):
-    #     seats.insert(-1, seats[-1][0:row_number][::order]) 
-    #     del seats[-1][:row_number]
-    #     order *= -1
-    # del seats[-1]
-    return 'All groups have been successfully placed'
+    # Layout is done at this point
+    
+    # Asssign seats to user from here
+    rank = 0
+    for j in range(len(groups)):
+        # Get the rank section with the most seats available
+        current_rank = max([section[rank] for section in layout], key=len)
+        # If no seat available with current rank, get next rank
+        if len(current_rank) == 0:
+            rank += 1
+            current_rank = max([section[rank] for section in layout], key=len)
+        # get current section
+        current_section = [section for section in layout if section[rank] == current_rank][0]
+        for _ in range(groups[j]):
+            # If no seat in current rank, place users in next rank but same section so they stay with their group
+            if len(current_rank) == 0:
+                current_rank = current_section[rank+1]
+                # If no seat in current section, place user in other section but same rank
+                if len(current_rank) == 0:
+                    current_rank = max([section[rank] for section in layout], key=len)
+            current_rank[0].user = j+1
+            current_rank[0].save()
+            current_rank.pop(0)
+    return seats
