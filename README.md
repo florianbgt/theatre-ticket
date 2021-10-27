@@ -24,3 +24,12 @@ You can log into the admin page (http://tickets.localhost/api/admin/) using the 
 The Nuxt Universal app is served here: http://tickets.localhost/
 
 The Nuxt app is server side rendered (on hard refresh, great for SEO!) and is hydrated to become a SPA after and provide a smooth user experience
+
+## To improve
+
+It would be great to implement the assign seat algorithm API endpoint in a async way.
+
+Indeed, this API endpoint takes time to complete. It would be nicer for the user to have this task done in the background, return a task ID and polling url, and have a polling in the frontend to retrieve the results once available from the polling url using the task id.
+
+I have never done such thing and I unfortunately run out of time to try such implementation.
+However, here is what I would try to do: https://testdriven.io/blog/django-and-celery/
