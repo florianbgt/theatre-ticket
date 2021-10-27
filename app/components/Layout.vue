@@ -35,7 +35,15 @@
             </b-tr>
             <b-tr>
               <b-td v-for="(seat, index) in row" :key="`td-seat-${index}`">
-                {{ !!seat.user ? `Group ${seat.user}` : "Available" }}
+                <strong v-if="!!seat.blocked" class="text-danger">
+                  {{ 'Blocked' }}
+                </strong>
+                <strong v-else-if="!!seat.user">
+                  {{ `Group #${seat.user}` }}
+                </strong>
+                <strong v-else class="text-success">
+                  {{ 'Available' }}
+                </strong>
               </b-td>
             </b-tr>
           </b-tbody>

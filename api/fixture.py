@@ -67,6 +67,12 @@ def populate():
         else:
             seat_rank = economy
         Seat.objects.get_or_create(number=i, section=left, row=seat_row, rank=seat_rank)
+    
+    # Block some seats
+    for num in [3, 46, 78, 101, 105, 199, 244]:
+        seat = Seat.objects.get(number=num)
+        seat.blocked = True
+        seat.save()
 
 
 if __name__ == "__main__":

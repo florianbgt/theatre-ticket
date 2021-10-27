@@ -28,7 +28,7 @@ export default {
         appendToast: false,
         toaster: "b-toaster-top-center",
         solid: true,
-        variant: "danger"
+        variant: "danger",
       });
     } finally {
       this.isLoading = false;
@@ -41,7 +41,7 @@ export default {
       groups: [null],
       sections: [],
       ranks: [],
-      seats: []
+      seats: [],
     };
   },
 
@@ -50,12 +50,12 @@ export default {
       const layout = [];
       for (const section of this.sections) {
         const seats_section = seats.filter(
-          seat => seat.section.id === section.id
+          (seat) => seat.section.id === section.id
         );
         const section_ordered = [];
         for (const rank of this.ranks) {
           const seat_rank = seats_section.filter(
-            seat => seat.rank.id === rank.id
+            (seat) => seat.rank.id === rank.id
           );
           if (seat_rank.length === 0) {
             continue;
@@ -86,21 +86,29 @@ export default {
       const concatRank = [].concat.apply([], concatSection);
       const concatRow = [].concat.apply([], concatRank);
       const concatSeat = [].concat.apply([], concatRow);
-      if (this.groups.reduce((a, b) => a + b, 0) > concatSeat.length) {
-        this.$bvToast.toast("You have more people than seats in the theatre", {
-          title: "Too many people to be seated",
-          autoHideDelay: 5000,
-          appendToast: false,
-          toaster: "b-toaster-top-center",
-          solid: true,
-          variant: "danger"
-        });
+      const availableSeats = concatSeat.filter(
+        (seat) => seat.blocked === false
+      ).length;
+      const remainingSeats =
+        this.groups.reduce((a, b) => a + b, 0) - availableSeats;
+      if (remainingSeats > 0) {
+        this.$bvToast.toast(
+          `You have more people than available seats. Please remove ${remainingSeats} users`,
+          {
+            title: "Too many people to be seated",
+            autoHideDelay: 5000,
+            appendToast: false,
+            toaster: "b-toaster-top-center",
+            solid: true,
+            variant: "danger",
+          }
+        );
         this.isLoading = false;
         return;
       }
       try {
         const seats = await this.$axios.$post("seats/assign/", {
-          groups: this.groups.filter(group => group !== null)
+          groups: this.groups.filter((group) => group !== null),
         });
         this.seats = this.layout(seats);
         this.groups = [null];
@@ -111,12 +119,12 @@ export default {
           appendToast: false,
           toaster: "b-toaster-top-center",
           solid: true,
-          variant: "danger"
+          variant: "danger",
         });
       } finally {
         this.isLoading = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
