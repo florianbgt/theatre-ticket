@@ -6,8 +6,50 @@ services:
     build:
       context: api
       dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python fixture.py && gunicorn --bind=0.0.0.0:8000 --workers=2 --threads=4 --reload _project.wsgi"
     volumes:
       - ./api:/code
+    env_file:
+      - .env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
+      - traefik.http.services.api.loadbalancer.server.port=8000
+      - traefik.http.routers.api.tls=true
+
+  app:
+    restart: always
+    build:
+      context: app
+      dockerfile: Dockerfile
+    command: npm run start
+    volumes:
+      - ./app:/code
+      - /code/node_modules
+      - /code/.nuxt
+    env_file:
+      - .env
+    depends_on:
+      - api
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.app.rule=Host(`${DOMAIN}`) && PathPrefix(`/`)
+      - traefik.http.services.app.loadbalancer.server.port=3000
+      - traefik.http.routers.app.tls=true
+
+  traefik:
+    image: traefik:v2.5
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
     ports:
-      - "8000:8000"
+      - 80:80
+      - 443:443
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro

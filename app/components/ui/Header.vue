@@ -11,6 +11,7 @@
             alt="logo"
             class="d-inline-block bg-light p-1 rounded"
           />
+          Tickets
         </b-navbar-brand>
       </b-container>
     </b-navbar>

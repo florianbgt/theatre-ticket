@@ -1,10 +1,4 @@
-from .models import Section, Rank, Seat
-
-def main(groups):
-    # Querries from db
-    sections = Section.objects.all()
-    ranks = Rank.objects.all()
-    seats = Seat.objects.all()
+def main(sections, ranks, seats, groups):
     # Remove all users from their seats
     seats.update(user = None)
     layout = []
@@ -43,12 +37,12 @@ def main(groups):
     # Layout is done at this point
     
     # Asssign seats to user from here
-    rank = 0
     for j in range(len(groups)):
+        rank = 0
         # Get the rank section with the most seats available
         current_rank = max([section[rank] for section in layout], key=len)
         # If no seat available with current rank, get next rank
-        if len(current_rank) == 0:
+        while len(current_rank) == 0:
             rank += 1
             current_rank = max([section[rank] for section in layout], key=len)
         # get current section
@@ -58,9 +52,10 @@ def main(groups):
             if len(current_rank) == 0:
                 current_rank = current_section[rank+1]
                 # If no seat in current section, place user in other section but same rank
-                if len(current_rank) == 0:
+                rank = -1
+                while len(current_rank) == 0:
+                    rank += 1
                     current_rank = max([section[rank] for section in layout], key=len)
             current_rank[0].user = j+1
             current_rank[0].save()
             current_rank.pop(0)
-    return seats

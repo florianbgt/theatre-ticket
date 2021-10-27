@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from tickets.views import SeatList, SeatDetail, AssignSeats, GetSeats
+from tickets.views import SectionList, RankList, SeatList, AssignSeats, GetSeats
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('seats/', SeatList.as_view()),
-    path('seats/<int:pk>/', SeatDetail.as_view()),
-    path('seats/assign/', AssignSeats.as_view()),
-    path('seats/retrieve/', GetSeats.as_view()),
+    path('api/admin/', admin.site.urls),
+    path('api/sections/', SectionList.as_view()),
+    path('api/ranks/', RankList.as_view()),
+    path('api/seats/', SeatList.as_view()),
+    path('api/seats/assign/', AssignSeats.as_view()),
+    path('api/seats/retrieve/', GetSeats.as_view()),
 ]
