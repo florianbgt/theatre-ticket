@@ -47,7 +47,8 @@ def main(sections, ranks, seats, groups):
             current_rank = max([section[rank] for section in layout], key=len)
         # get current section
         current_section = [section for section in layout if section[rank] == current_rank][0]
-        for _ in range(groups[j]):
+        k = groups[j]
+        while k > 0:
             # If no seat in current rank, place users in next rank but same section so they stay with their group
             if len(current_rank) == 0:
                 current_rank = current_section[rank+1]
@@ -56,6 +57,10 @@ def main(sections, ranks, seats, groups):
                 while len(current_rank) == 0:
                     rank += 1
                     current_rank = max([section[rank] for section in layout], key=len)
+            if current_rank[0].blocked == True:
+                current_rank.pop(0)
+                continue
             current_rank[0].user = j+1
             current_rank[0].save()
             current_rank.pop(0)
+            k -= 1

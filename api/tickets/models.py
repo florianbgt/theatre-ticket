@@ -27,6 +27,7 @@ class Seat(models.Model):
     row = models.PositiveIntegerField()
     rank = models.ForeignKey(Rank, on_delete=models.SET_NULL, null=True, default=None)
     user = models.PositiveIntegerField(null=True, default=None)
+    blocked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

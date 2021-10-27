@@ -28,8 +28,8 @@ DEBUG = int(os.environ.get("DEBUG"))
 
 ALLOWED_HOSTS = [os.environ.get("DOMAIN"), 'api']
 
-CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = ["https://" + os.environ.get("DOMAIN")]
+# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = ["https://" + os.environ.get("DOMAIN")]
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

@@ -14,4 +14,4 @@ class RanksAdmin(admin.ModelAdmin):
 
 @admin.register(Seat)
 class SeatAdmin(admin.ModelAdmin):
-    list_display = ['number', 'section', 'row', 'rank', 'user', 'is_aisle', 'is_front', 'is_balcony', 'is_available']
+    list_display = ['number', 'section', 'row', 'rank', 'user', 'blocked', 'is_aisle', 'is_front', 'is_balcony', 'is_available']
