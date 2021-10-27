@@ -22,3 +22,5 @@ The Django rest API is served here: http://tickets.localhost/api/
 You can log into the admin page (http://tickets.localhost/api/admin/) using the admin user (user: admin, password: testpass123)
 
 The Nuxt Universal app is served here: http://tickets.localhost/
+
+The Nuxt app is server side rendered (on hard refresh, great for SEO!) and is hydrated to become a SPA after and provide a smooth user experience
